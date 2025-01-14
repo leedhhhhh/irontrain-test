@@ -257,49 +257,54 @@ function App() {
           <SpinnerWheel />
         ) : (
           <>
-            <StyledTable>
-              <thead>
-                <tr>
-                  <TableHeader>Select</TableHeader>
-                  <TableHeader>Expand</TableHeader>
-                  {columnDataList.map((column) => {
-                    return (
-                      <TableHeader
-                        key={column.name}
-                        onClick={() => handleSort(column.value)}
-                      >
-                        {column.name}
-                      </TableHeader>
-                    );
-                  })}
-                </tr>
-              </thead>
-              <tbody>
-                {displayData.map((row) => (
-                  <React.Fragment key={row.id + row.name}>
-                    <tr>
-                      <TableCell>
-                        <Checkbox type="checkbox" />
-                      </TableCell>
-                      <TableCell>
-                        <ExpandButton onClick={() => toggleRow(row.id)}>
-                          {expandedRows[row.id] ? '▲' : '▼'}
-                        </ExpandButton>
-                      </TableCell>
-                      {renderTableCells(row)}
-                    </tr>
-                    {expandedRows[row.id] && (
+            {displayData.length === 0 ? (
+              <NoResultWrap>
+                <span>검색결과가 존재하지 않습니다.</span>
+              </NoResultWrap>
+            ) : (
+              <StyledTable>
+                <thead>
+                  <tr>
+                    <TableHeader>Select</TableHeader>
+                    <TableHeader>Expand</TableHeader>
+                    {columnDataList.map((column) => {
+                      return (
+                        <TableHeader
+                          key={column.name}
+                          onClick={() => handleSort(column.value)}
+                        >
+                          {column.name}
+                        </TableHeader>
+                      );
+                    })}
+                  </tr>
+                </thead>
+                <tbody>
+                  {displayData.map((row) => (
+                    <React.Fragment key={row.id + row.name}>
                       <tr>
-                        <ExpandedRow colSpan={9}>
-                          {expandCell(row.address)}
-                        </ExpandedRow>
+                        <TableCell>
+                          <Checkbox type="checkbox" />
+                        </TableCell>
+                        <TableCell>
+                          <ExpandButton onClick={() => toggleRow(row.id)}>
+                            {expandedRows[row.id] ? '▲' : '▼'}
+                          </ExpandButton>
+                        </TableCell>
+                        {renderTableCells(row)}
                       </tr>
-                    )}
-                  </React.Fragment>
-                ))}
-              </tbody>
-            </StyledTable>
-
+                      {expandedRows[row.id] && (
+                        <tr>
+                          <ExpandedRow colSpan={9}>
+                            {expandCell(row.address)}
+                          </ExpandedRow>
+                        </tr>
+                      )}
+                    </React.Fragment>
+                  ))}
+                </tbody>
+              </StyledTable>
+            )}
             {/* 조회할 데이터가 존재하며 로딩 중일 경우 */}
             {isLoading && (
               <div style={{ textAlign: 'center', margin: '20px 0' }}>

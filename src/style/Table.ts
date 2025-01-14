@@ -27,6 +27,10 @@ export const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   background-color: white;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const TableHeader = styled.th`
