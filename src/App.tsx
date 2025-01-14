@@ -17,7 +17,7 @@ import {
   SearchInput,
   SearchInputSpan
 } from './style/Main';
-import { SpinnerWheel } from './style/spinner';
+import { SpinnerWheel } from './style/Spinner';
 
 function App() {
   const [data, setData] = useState<customDataProps[]>([]);
