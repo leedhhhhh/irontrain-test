@@ -5,7 +5,9 @@ interface SpanProps {
 }
 
 export const MainContainerWrap = styled.div`
-  margin: 260px;
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 150px;
 `;
 
 export const SearchContainer = styled.div`

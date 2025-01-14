@@ -123,15 +123,18 @@ function App() {
   const handleScroll = useCallback(() => {
     const container = containerRef.current;
     if (!container) return;
+
+    const scrollOffset = 5; // 여유 값
     const bottom =
-      container.scrollHeight - container.scrollTop === container.clientHeight;
+      Math.abs(
+        container.scrollHeight - container.scrollTop - container.clientHeight
+      ) <= scrollOffset;
+
     if (bottom && !isFinished && !isLoading) {
-      // 데이터 끝에 도달하지 않았고, 로딩 중이 아닐 때만 실행
       if (scrollIndex < data.length) {
         setScrollIndex((prev) => prev + 20);
         setDisplayData(data.slice(0, scrollIndex + 20));
       } else {
-        // 추가 데이터가 없으면 API 호출
         setScrollIndex((prev) => prev + 20);
         setDisplayData(data.slice(0, scrollIndex + 20));
         fetchMoreData();
