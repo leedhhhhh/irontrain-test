@@ -1,6 +1,9 @@
 import styled from 'styled-components';
+import '../App.css';
 
 export const TableContainer = styled.div`
+  font-family: 'Noto Sans', sans-serif;
+
   height: 400px;
   overflow-y: auto;
   border: 1px solid #e0e0e0;
@@ -72,4 +75,11 @@ export const Checkbox = styled.input`
 export const ExpandedRow = styled(TableCell)`
   background-color: #f8f9fa;
   padding: 16px;
+`;
+
+export const NoResultWrap = styled.div`
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;

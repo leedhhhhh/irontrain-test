@@ -5,6 +5,7 @@ import {
   Checkbox,
   ExpandButton,
   ExpandedRow,
+  NoResultWrap,
   StyledTable,
   TableCell,
   TableContainer,
@@ -37,7 +38,8 @@ function App() {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const columnDataList = [
-    { name: 'Image', value: 'name' },
+    // 추후 이미지가 생길 수 있으니 주석 처리
+    // { name: 'Image', value: 'name' },
     { name: 'Name', value: 'name' },
     { name: 'Gender', value: 'gender' },
     { name: 'Birth Day', value: 'birthday' },
@@ -45,6 +47,12 @@ function App() {
     { name: 'WebSite', value: 'website' },
     { name: 'Phone Number', value: 'phNum' }
   ];
+
+  useEffect(() => {
+    console.log('Data:', data);
+    console.log('Filtered Data:', filteredData);
+    console.log('Display Data:', displayData);
+  }, [data, filteredData, displayData]);
 
   // 초기 데이터 세팅
   useEffect(() => {
@@ -58,8 +66,6 @@ function App() {
           return {
             id: item.id,
             name: `${item.firstname} ${item.lastname}`,
-            group: item.website,
-            username: item.phone,
             address: item.address,
             gender: item.gender,
             birthday: item.birthday,
@@ -141,7 +147,7 @@ function App() {
     setFilteredData(filtered);
     setDisplayData(filtered.slice(0, scrollIndex));
     setIsFinished(false); // 검색하면 끝 상태 초기화
-  }, [searchQuery, data, scrollIndex, isFinished]);
+  }, [searchQuery, scrollIndex, isFinished]);
 
   // 정렬
   const handleSort = useCallback(
@@ -165,11 +171,22 @@ function App() {
   );
 
   // cell data
-  const renderCell = (content) => (
-    <div className="cell" title={content}>
-      {content ?? 'No data'}
-    </div>
-  );
+  const renderCell = (content, type?: string) => {
+    // 추후 image가 생길 수 있으니 일단 삼항연산자로 예외처리
+    return type === 'IMAGE' ? (
+      <div className="cell cell-image" title={content}>
+        <img
+          src={content ?? ''}
+          alt="image"
+          onError={(e) => (e.currentTarget.style.display = 'none')}
+        />
+      </div>
+    ) : (
+      <div className="cell" title={content}>
+        {content ?? 'No data'}
+      </div>
+    );
+  };
 
   // expand cell data
   const expandCell = (address) => (
@@ -185,10 +202,9 @@ function App() {
   );
 
   // 반복되는 table 데이터 Component 로 변경
-  const renderTableCells = (row) => {
+  const renderTableCells = (row: customDataProps) => {
     return (
       <>
-        <TableCell>{renderCell(row.name)}</TableCell>
         <TableCell>{renderCell(row.name)}</TableCell>
         <TableCell>{renderCell(row.gender)}</TableCell>
         <TableCell>{renderCell(row.birthday)}</TableCell>
@@ -219,11 +235,21 @@ function App() {
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
         />
-        <SearchInputSpan isFocused={isFocused} />
+        <SearchInputSpan
+          style={
+            isFocused
+              ? { left: 'calc(100% - 300px)', width: '300px' }
+              : { left: 'calc(100% - 150px)', width: '0' }
+          }
+        />
       </SearchContainer>
       {/* 테이블 */}
 
-      <TableContainer onScroll={handleScroll} ref={containerRef}>
+      <TableContainer
+        onScroll={handleScroll}
+        ref={containerRef}
+        data-testid="table-container"
+      >
         {initLoading ? (
           <SpinnerWheel />
         ) : (
@@ -235,7 +261,10 @@ function App() {
                   <TableHeader>Expand</TableHeader>
                   {columnDataList.map((column) => {
                     return (
-                      <TableHeader onClick={() => handleSort(column.value)}>
+                      <TableHeader
+                        key={column.name}
+                        onClick={() => handleSort(column.value)}
+                      >
                         {column.name}
                       </TableHeader>
                     );

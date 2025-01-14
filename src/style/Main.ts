@@ -27,12 +27,10 @@ export const SearchInput = styled.input`
   outline: none;
 `;
 
-export const SearchInputSpan = styled.span<SpanProps>`
+export const SearchInputSpan = styled.span`
   position: absolute;
   bottom: 0;
-  left: ${(props) =>
-    props.isFocused ? 'calc(100% - 300px)' : 'calc(100% - 150px)'};
-  width: ${(props) => (props.isFocused ? '300px' : '0')};
+
   height: 2px;
   background-color: #6c757d;
   transition: 0.4s;
