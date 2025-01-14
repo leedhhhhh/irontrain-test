@@ -43,6 +43,9 @@ npm test
 
 ```
 로컬주소: localhost:3000
+
+* git clone을 진행하지 않고 바로 프로젝트 확인에 용이하게 배포를 진행했습니다.
+배포된주소: https://irontrain-test.vercel.app/
 ```
 
 ## 폴더트리
