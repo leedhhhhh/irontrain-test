@@ -1,46 +1,157 @@
-# Getting Started with Create React App
+# Irontrain 프론트엔드 채용 과제
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React + TypeScript + Jest 를 사용하여 과제 구현하였습니다.
 
-## Available Scripts
+## Project 실행 가이드
 
-In the project directory, you can run:
+version
 
-### `npm start`
+```
+node 16.16.0
+react 19.0.6
+typescript ^5.7.3
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+npm install
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```
+npm install
 
-### `npm test`
+* 의존성 에러 날시
+npm install --legacy-peer-deps 로 설치
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+실행
 
-### `npm run build`
+```
+npm run start
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+테스트
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
+npm test
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+주소
 
-### `npm run eject`
+```
+로컬주소: localhost:3000
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## 폴더트리
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
+ ┣ 📂__mocks__
+ ┃ ┣ 📜styleMock.js
+ ┣ 📂public
+ ┃ ┣ 📜favicon.ico
+ ┃ ┣ 📜index.html
+ ┃ ┣ 📜irontrain.ico
+ ┃ ┣ 📜logo192.png
+ ┃ ┣ 📜logo512.png
+ ┃ ┣ 📜manifest.json
+ ┃ ┗ 📜robots.txt
+ ┣ 📂src
+ ┃ ┣ 📂api
+ ┃ ┃ ┗ 📂table
+ ┃ ┃ ┃ ┗ 📂list
+ ┃ ┃ ┃ ┃ ┗ 📜route.ts
+ ┃ ┣ 📂style
+ ┃ ┃ ┣ 📜Main.ts
+ ┃ ┃ ┣ 📜Table.ts
+ ┃ ┃ ┗ 📜spinner.ts
+ ┃ ┣ 📜App.css
+ ┃ ┣ 📜App.test.tsx
+ ┃ ┣ 📜App.tsx
+ ┃ ┣ 📜custom.d.ts
+ ┃ ┣ 📜index.css
+ ┃ ┣ 📜index.tsx
+ ┃ ┣ 📜logo.svg
+ ┃ ┣ 📜reportWebVitals.ts
+ ┃ ┣ 📜setupTests.ts
+ ┃ ┗ 📜type.ts
+ ┣ 📜.env
+ ┣ 📜.gitignore
+ ┣ 📜.prettierrc
+ ┣ 📜README.md
+ ┣ 📜babel.config.js
+ ┣ 📜eslint.config.mjs
+ ┣ 📜jest.config.js
+ ┣ 📜package-lock.json
+ ┣ 📜package.json
+ ┣ 📜setupTests.js
+ ┣ 📜tsconfig.json
+ ┗ 📜webpack.config.js
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+| 폴더, 파일        | 설명                                  |
+| ----------------- | ------------------------------------- |
+| mocks             | jest css 읽을 수 있게 하는 폴더       |
+| public            | base setting folder                   |
+| src               | source code folder                    |
+| .env              | host url 저장해놓은 파일              |
+| babel.config.js   | babel 설정 파일                       |
+| eslint.config.mjs | eslint 설정파일                       |
+| jest.config.js    | jest 설정 파일                        |
+| setupTests.js     | jest 테스트 환경을 설정하기 위한 파일 |
+| tsconfig.json     | typescript 설정 파일                  |
+| webpack.config.js | webpack 설정 파일                     |
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## 과제 요구사항
 
-## Learn More
+- **테이블 관련 라이브러리 사용 금지**: 예를 들어 `react-table`과 같은 외부 라이브러리는 사용할 수 없습니다.
+- **Checkbox**: 각 행에 체크박스를 추가합니다.
+- **Infinite Scroll**: 데이터를 스크롤 시 무한으로 로드할 수 있어야 합니다.
+- **Sorting**: 컬럼별 정렬 기능을 제공합니다.
+- **Search**: 검색 기능을 제공합니다.
+  - 검색 기능은 그리드 외부에 위치하여, 데이터와 연동되어야 합니다.
+- **Rows**: 최소 **100개 이상**의 데이터를 컨트롤 할 수 있어야 합니다.
+- **Columns**: 데이터 표현을 위한 컬럼을 정의합니다.
+  - 컬럼은 상기 API 데이터를 기반으로 자유롭게 설정해주세요.
+- **Tooltip**: 테이블 셀의 영역보다 넓은 데이터일 경우 셀에 마우스오버 시 툴팁으로 전체 내용을 보여주세요.
+- **Sub Rows:** 테이블 행 클릭 시 `address` 데이터를 세부행으로 보여주세요.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 문제 해결 방식
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- **테이블 관련 라이브러리 사용 금지**: 예를 들어 `react-table`과 같은 외부 라이브러리는 사용할 수 없습니다.
+
+  -> React로만 구현했습니다.
+
+- **Checkbox**: 각 행에 체크박스를 추가합니다.
+
+  -> 추가 완료했습니다.
+
+- **Infinite Scroll**: 데이터를 스크롤 시 무한으로 로드할 수 있어야 합니다.
+
+  -> window, mac 환경에서 동일하게 동작하도록 구현했습니다.
+
+- **Sorting**: 컬럼별 정렬 기능을 제공합니다.
+
+  -> 올림차순, 내림차순 sorting 으로 정렬 기능 구현했습니다.
+
+- **Search**: 검색 기능을 제공합니다.
+
+  - 검색 기능은 그리드 외부에 위치하여, 데이터와 연동되어야 합니다.
+
+  -> 어떤 검색어로 검색이 되게 할지 정해진게 없어 `firstName LastName` 을 합친 Name으로 검색되도록 구현했습니다.
+
+- **Rows**: 최소 **100개 이상**의 데이터를 컨트롤 할 수 있어야 합니다.
+
+  -> 100개 이상 데이터에서도 sort, search, infinite scroll 구현했습니다.
+
+- **Columns**: 데이터 표현을 위한 컬럼을 정의합니다.
+  - 컬럼은 상기 API 데이터를 기반으로 자유롭게 설정해주세요.
+- **Tooltip**: 테이블 셀의 영역보다 넓은 데이터일 경우 셀에 마우스오버 시 툴팁으로 전체 내용을 보여주세요.
+
+  -> 구현 시 긴 데이터가 없어 모든 항목 hover 시 툴팁 나오도록 구현했습니다.
+
+- **Sub Rows:** 테이블 행 클릭 시 `address` 데이터를 세부행으로 보여주세요.
+
+  -> 펼치기 버튼 클릭 시 세부 행 노출 되도록 구현했습니다.
+
+## 미비사항 및 후기
+
+- jest 를 활용한 테스트 기능을 추가하였으나 몇몇 case 가 정상적으로 success 되지 않아 기회가 된다면 더 좋은 방안으로 구현해보고 싶습니다.
+
+- 프론트엔드 개발자로서 기회가 된다면 디자인 리팩토링을 구현해보고 싶습니다.
