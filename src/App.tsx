@@ -1,6 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import fetchData from './api/table/list/route';
 import { customDataProps, dataProps } from './type';
 import {
@@ -11,13 +9,14 @@ import {
   TableCell,
   TableContainer,
   TableHeader
-} from './Table';
+} from './style/Table';
 import {
   MainContainerWrap,
   SearchContainer,
   SearchInput,
   SearchInputSpan
-} from './Main';
+} from './style/Main';
+import { SpinnerWheel } from './style/spinner';
 
 function App() {
   const [data, setData] = useState<customDataProps[]>([]);
@@ -32,12 +31,26 @@ function App() {
   const [scrollIndex, setScrollIndex] = useState<number>(10); // 초기 데이터 로드 갯수
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const [isFinished, setIsFinished] = useState<boolean>(false); // 끝났는지 여부
+  const [initLoading, setInitLoading] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const columnDataList = [
+    { name: 'Image', value: 'name' },
+    { name: 'Name', value: 'name' },
+    { name: 'Gender', value: 'gender' },
+    { name: 'Birth Day', value: 'birthday' },
+    { name: 'Email', value: 'email' },
+    { name: 'WebSite', value: 'website' },
+    { name: 'Phone Number', value: 'phNum' }
+  ];
 
   // 초기 데이터 세팅
   useEffect(() => {
     const getDataList = async () => {
       try {
+        setInitLoading(true);
         const result = await fetchData(
           `/api/v2/persons?_quantity=${scrollIndex}&_gender=female&_birthday_start=2005-01-01`
         );
@@ -59,8 +72,10 @@ function App() {
         setData(generatedData);
         setFilteredData(generatedData);
         setDisplayData(generatedData.slice(0, scrollIndex));
+        setInitLoading(false);
       } catch (err) {
         console.log(err);
+        setInitLoading(false);
       }
     };
     getDataList();
@@ -99,25 +114,24 @@ function App() {
     }
   }, [scrollIndex, isLoading, isFinished]);
 
-  const handleScroll = useCallback(
-    (e) => {
-      const bottom =
-        e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
-      if (bottom && !isFinished && !isLoading) {
-        // 데이터 끝에 도달하지 않았고, 로딩 중이 아닐 때만 실행
-        if (scrollIndex < data.length) {
-          setScrollIndex((prev) => prev + 20);
-          setDisplayData(data.slice(0, scrollIndex + 20));
-        } else {
-          // 추가 데이터가 없으면 API 호출
-          setScrollIndex((prev) => prev + 20);
-          setDisplayData(data.slice(0, scrollIndex + 20));
-          fetchMoreData();
-        }
+  const handleScroll = useCallback(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const bottom =
+      container.scrollHeight - container.scrollTop === container.clientHeight;
+    if (bottom && !isFinished && !isLoading) {
+      // 데이터 끝에 도달하지 않았고, 로딩 중이 아닐 때만 실행
+      if (scrollIndex < data.length) {
+        setScrollIndex((prev) => prev + 20);
+        setDisplayData(data.slice(0, scrollIndex + 20));
+      } else {
+        // 추가 데이터가 없으면 API 호출
+        setScrollIndex((prev) => prev + 20);
+        setDisplayData(data.slice(0, scrollIndex + 20));
+        fetchMoreData();
       }
-    },
-    [scrollIndex, data, isFinished, isLoading, fetchMoreData]
-  );
+    }
+  }, [scrollIndex, data, isFinished, isLoading, fetchMoreData]);
 
   // 검색 필터
   useEffect(() => {
@@ -170,6 +184,21 @@ function App() {
     </div>
   );
 
+  // 반복되는 table 데이터 Component 로 변경
+  const renderTableCells = (row) => {
+    return (
+      <>
+        <TableCell>{renderCell(row.name)}</TableCell>
+        <TableCell>{renderCell(row.name)}</TableCell>
+        <TableCell>{renderCell(row.gender)}</TableCell>
+        <TableCell>{renderCell(row.birthday)}</TableCell>
+        <TableCell>{renderCell(row.email)}</TableCell>
+        <TableCell>{renderCell(row.website)}</TableCell>
+        <TableCell>{renderCell(row.phNum)}</TableCell>
+      </>
+    );
+  };
+
   // Sub Rows 토글
   const toggleRow = useCallback(
     (id: number) => {
@@ -192,76 +221,67 @@ function App() {
         />
         <SearchInputSpan isFocused={isFocused} />
       </SearchContainer>
+      {/* 테이블 */}
 
-      {/* 테이블 */}
-      {/* 테이블 */}
-      <TableContainer onScroll={handleScroll}>
-        <StyledTable>
-          <thead>
-            <tr>
-              <TableHeader>Select</TableHeader>
-              <TableHeader>Expand</TableHeader>
-              <TableHeader onClick={() => handleSort('name')}>
-                Image
-              </TableHeader>
-              <TableHeader onClick={() => handleSort('name')}>Name</TableHeader>
-              <TableHeader onClick={() => handleSort('gender')}>
-                Gender
-              </TableHeader>
-              <TableHeader onClick={() => handleSort('birthday')}>
-                Birth Day
-              </TableHeader>
-              <TableHeader onClick={() => handleSort('email')}>
-                Email
-              </TableHeader>
-              <TableHeader onClick={() => handleSort('website')}>
-                WebSite
-              </TableHeader>
-              <TableHeader onClick={() => handleSort('phNum')}>
-                Phone Number
-              </TableHeader>
-            </tr>
-          </thead>
-          <tbody>
-            {displayData.map((row) => (
-              <React.Fragment key={row.id + row.name}>
+      <TableContainer onScroll={handleScroll} ref={containerRef}>
+        {initLoading ? (
+          <SpinnerWheel />
+        ) : (
+          <>
+            <StyledTable>
+              <thead>
                 <tr>
-                  <TableCell>
-                    <Checkbox type="checkbox" />
-                  </TableCell>
-                  <TableCell>
-                    <ExpandButton onClick={() => toggleRow(row.id)}>
-                      {expandedRows[row.id] ? '▲' : '▼'}
-                    </ExpandButton>
-                  </TableCell>
-                  <TableCell>{renderCell(row.name)}</TableCell>
-                  <TableCell>{renderCell(row.name)}</TableCell>
-                  <TableCell>{renderCell(row.gender)}</TableCell>
-                  <TableCell>{renderCell(row.birthday)}</TableCell>
-                  <TableCell>{renderCell(row.email)}</TableCell>
-                  <TableCell>{renderCell(row.website)}</TableCell>
-                  <TableCell>{renderCell(row.phNum)}</TableCell>
+                  <TableHeader>Select</TableHeader>
+                  <TableHeader>Expand</TableHeader>
+                  {columnDataList.map((column) => {
+                    return (
+                      <TableHeader onClick={() => handleSort(column.value)}>
+                        {column.name}
+                      </TableHeader>
+                    );
+                  })}
                 </tr>
-                {expandedRows[row.id] && (
-                  <tr>
-                    <ExpandedRow colSpan={9}>
-                      {expandCell(row.address)}
-                    </ExpandedRow>
-                  </tr>
-                )}
-              </React.Fragment>
-            ))}
-          </tbody>
-        </StyledTable>
-        {/* 조회할 데이터가 존재하며 로딩 중일 경우 */}
-        {isLoading && (
-          <div style={{ textAlign: 'center', margin: '20px 0' }}>
-            loading...
-          </div>
-        )}
-        {/* 조회할 데이터가 존재하지 않을 경우 */}
-        {isFinished && (
-          <div style={{ textAlign: 'center', margin: '20px 0' }}>Finish</div>
+              </thead>
+              <tbody>
+                {displayData.map((row) => (
+                  <React.Fragment key={row.id + row.name}>
+                    <tr>
+                      <TableCell>
+                        <Checkbox type="checkbox" />
+                      </TableCell>
+                      <TableCell>
+                        <ExpandButton onClick={() => toggleRow(row.id)}>
+                          {expandedRows[row.id] ? '▲' : '▼'}
+                        </ExpandButton>
+                      </TableCell>
+                      {renderTableCells(row)}
+                    </tr>
+                    {expandedRows[row.id] && (
+                      <tr>
+                        <ExpandedRow colSpan={9}>
+                          {expandCell(row.address)}
+                        </ExpandedRow>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                ))}
+              </tbody>
+            </StyledTable>
+
+            {/* 조회할 데이터가 존재하며 로딩 중일 경우 */}
+            {isLoading && (
+              <div style={{ textAlign: 'center', margin: '20px 0' }}>
+                <SpinnerWheel />
+              </div>
+            )}
+
+            {/* 조회할 데이터가 존재하지 않을 경우 */}
+            {isFinished && (
+              <div style={{ textAlign: 'center', margin: '20px 0' }}>
+                Finish
+              </div>
+            )}
+          </>
         )}
       </TableContainer>
     </MainContainerWrap>
