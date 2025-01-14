@@ -9,7 +9,10 @@ const spin = keyframes`
   }
 `;
 
-export const SpinnerWheel = styled.div`
+export const SpinnerWheel = styled.div<{
+  initLoading: boolean;
+  isLoading: boolean;
+}>`
   display: inline-block;
   width: 40px;
   height: 40px;
@@ -18,8 +21,12 @@ export const SpinnerWheel = styled.div`
   border-radius: 50%;
   animation: ${spin} 1s linear infinite;
 
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  ${({ initLoading }) =>
+    initLoading &&
+    `
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    `}
 `;

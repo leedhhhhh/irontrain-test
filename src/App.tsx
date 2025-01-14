@@ -254,7 +254,7 @@ function App() {
         data-testid="table-container"
       >
         {initLoading ? (
-          <SpinnerWheel />
+          <SpinnerWheel initLoading={true} isLoading={false} />
         ) : (
           <>
             {displayData.length === 0 ? (
@@ -307,8 +307,13 @@ function App() {
             )}
             {/* 조회할 데이터가 존재하며 로딩 중일 경우 */}
             {isLoading && (
-              <div style={{ textAlign: 'center', margin: '20px 0' }}>
-                <SpinnerWheel />
+              <div
+                style={{
+                  textAlign: 'center',
+                  margin: '20px 0'
+                }}
+              >
+                <SpinnerWheel initLoading={false} isLoading={true} />
               </div>
             )}
 
