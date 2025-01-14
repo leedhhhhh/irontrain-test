@@ -4,6 +4,12 @@ React + TypeScript + Jest 를 사용하여 과제 구현하였습니다.
 
 ## Project 실행 가이드
 
+branch
+
+```
+main branch
+```
+
 version
 
 ```
